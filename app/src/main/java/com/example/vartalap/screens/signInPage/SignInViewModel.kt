@@ -56,7 +56,7 @@ class SignInViewModel(application: Application) : AndroidViewModel(application) 
                     _isSignedIn.value = true
                 } else {
                     _isSigningIn.value = false
-                    showToast("unable to sign in")
+                    showToast("sign in failed")
                 }
             }
     }

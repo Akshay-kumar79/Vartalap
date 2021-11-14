@@ -11,6 +11,7 @@ object Constants {
     const val KEY_USER_ID = "userId"
     const val KEY_IMAGE = "image"
     const val KEY_FCM_TOKEN = "fcmToken"
+    const val KEY_AVAILABILITY = "availability"
 
     //chat
     const val KEY_COLLECTION_CHAT = "chat"
@@ -18,6 +19,7 @@ object Constants {
     const val KEY_RECEIVER_ID = "receiverID"
     const val KEY_MESSAGE = "message"
     const val KEY_TIMESTAMP = "timeStamp"
+
 
     const val MODE_SET_DATA ="mode_set_data"
     const val MODE_INSERT_DATA ="mode_insert_data"

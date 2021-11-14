@@ -58,19 +58,31 @@ class SignUpViewModel(application: Application) : AndroidViewModel(application) 
         user[Constants.KEY_PASSWORD] = password.value!!
         user[Constants.KEY_IMAGE] = encodedImage!!
 
-        database.collection(Constants.KEY_COLLECTION_USERS).add(user)
-            .addOnSuccessListener { documentReference ->
-                _isSigningUp.value = false
-                preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true)
-                preferenceManager.putString(Constants.KEY_USER_ID, documentReference.id)
-                preferenceManager.putString(Constants.KEY_NAME, name.value!!)
-                preferenceManager.putString(Constants.KEY_IMAGE, encodedImage!!)
-                _isSignedUp.value = true
+        database.collection(Constants.KEY_COLLECTION_USERS)
+            .whereEqualTo(Constants.KEY_EMAIL, user[Constants.KEY_EMAIL])
+            .get()
+            .addOnCompleteListener { task ->
+                if(task.isSuccessful && task.result != null && task.result!!.documents.size > 0){
+                    _isSigningUp.value = false
+                    showToast("email id already exit")
+                }else{
+                    database.collection(Constants.KEY_COLLECTION_USERS).add(user)
+                        .addOnSuccessListener { documentReference ->
+                            _isSigningUp.value = false
+                            preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true)
+                            preferenceManager.putString(Constants.KEY_USER_ID, documentReference.id)
+                            preferenceManager.putString(Constants.KEY_NAME, name.value!!)
+                            preferenceManager.putString(Constants.KEY_IMAGE, encodedImage!!)
+                            _isSignedUp.value = true
+                        }
+                        .addOnFailureListener {
+                            _isSigningUp.value = false
+                            showToast(it.message ?: "sign up failed")
+                        }
+                }
             }
-            .addOnFailureListener {
-                _isSigningUp.value = false
-                showToast(it.message ?: "sign up failed")
-            }
+
+
     }
 
     private fun isValidSignUpDetails(): Boolean {
