@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "675525430289",
+    "project_id": "vartalap-9e8b9",
+    "storage_bucket": "vartalap-9e8b9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:675525430289:android:60f38d7c9b1189cbdbb5b0",
+        "android_client_info": {
+          "package_name": "com.example.vartalap"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "675525430289-nacpcgdu0g46va9hn3qdubh6098rgacl.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.vartalap",
+            "certificate_hash": "ecab20c6d444a8cbbf4696742f1a95b71bc5d79a"
+          }
+        },
+        {
+          "client_id": "675525430289-mjn8955hmmqbnpcr0sao00j8b2khv7i1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC3pVVG-4dLZucplw_gz4Q4nDL2R-UbanU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "675525430289-mjn8955hmmqbnpcr0sao00j8b2khv7i1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
