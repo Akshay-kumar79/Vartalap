@@ -73,6 +73,10 @@ class SignUpViewModel(application: Application) : AndroidViewModel(application) 
                             preferenceManager.putString(Constants.KEY_USER_ID, documentReference.id)
                             preferenceManager.putString(Constants.KEY_NAME, name.value!!)
                             preferenceManager.putString(Constants.KEY_IMAGE, encodedImage!!)
+
+                            database.collection(Constants.KEY_COLLECTION_USERS).document(documentReference.id)
+                                .update(Constants.KEY_AVAILABILITY, true)
+
                             _isSignedUp.value = true
                         }
                         .addOnFailureListener {

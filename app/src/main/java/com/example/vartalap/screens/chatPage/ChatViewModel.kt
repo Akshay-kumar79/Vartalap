@@ -39,6 +39,10 @@ class ChatViewModel(private val receiverUser: User, application: Application) : 
     val visibleScreen: LiveData<String>
     get() = _visibleScreen
 
+    private val _isReceiverAvailable = MutableLiveData<Boolean>()
+    val isReceiverAvailable: LiveData<Boolean>
+    get() = _isReceiverAvailable
+
     var messageInsertMode = Constants.MODE_SET_DATA
     var conversionId: String? = null
 
@@ -86,9 +90,21 @@ class ChatViewModel(private val receiverUser: User, application: Application) : 
 
     init {
         _visibleScreen.value = Constants.SCREEN_LOADING
+        _isReceiverAvailable.value = false
         inputMessage.value = ""
         _name.value = receiverUser.name
         listenMessages()
+        listenReceiverAvailability()
+    }
+
+    private fun listenReceiverAvailability(){
+        database.collection(Constants.KEY_COLLECTION_USERS).document(receiverUser.id)
+            .addSnapshotListener{ value, error ->
+                if(error != null) return@addSnapshotListener
+                if(value != null){
+                    _isReceiverAvailable.value = value.getBoolean(Constants.KEY_AVAILABILITY)
+                }
+            }
     }
 
     private fun listenMessages(){

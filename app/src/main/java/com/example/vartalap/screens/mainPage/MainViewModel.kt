@@ -135,7 +135,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     fun signOut() {
         val database = FirebaseFirestore.getInstance()
         val documentReference = database.collection(Constants.KEY_COLLECTION_USERS).document(preferenceManager.getString(Constants.KEY_USER_ID)!!)
-            .update(Constants.KEY_FCM_TOKEN, FieldValue.delete())
+            .update(Constants.KEY_FCM_TOKEN, FieldValue.delete(), Constants.KEY_AVAILABILITY, false)
             .addOnSuccessListener {
                 showToast("Signing out...")
                 preferenceManager.clear()

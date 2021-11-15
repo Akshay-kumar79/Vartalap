@@ -53,6 +53,10 @@ class SignInViewModel(application: Application) : AndroidViewModel(application) 
                     preferenceManager.putString(Constants.KEY_USER_ID, documentSnapshot.id)
                     preferenceManager.putString(Constants.KEY_NAME, documentSnapshot.getString(Constants.KEY_NAME) ?: "")
                     preferenceManager.putString(Constants.KEY_IMAGE, documentSnapshot.getString(Constants.KEY_IMAGE) ?: "")
+
+                    database.collection(Constants.KEY_COLLECTION_USERS).document(documentSnapshot.id)
+                        .update(Constants.KEY_AVAILABILITY, true)
+
                     _isSignedIn.value = true
                 } else {
                     _isSigningIn.value = false

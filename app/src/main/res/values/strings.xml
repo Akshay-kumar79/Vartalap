@@ -11,7 +11,7 @@
     <string name="sign_up">Sign Up</string>
     <string name="select_user">Select User</string>
     <string name="no_users_found">No Users Found</string>
-    <string name="type_a_message">type a message...</string>
+    <string name="type_a_message">type a message…</string>
     <string name="online">online</string>
 
 </resources>
