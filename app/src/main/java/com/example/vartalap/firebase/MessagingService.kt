@@ -20,7 +20,7 @@ class MessagingService : FirebaseMessagingService() {
 
     override fun onNewToken(token: String) {
         super.onNewToken(token)
-
+        val a = token
     }
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
