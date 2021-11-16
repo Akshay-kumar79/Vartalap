@@ -9,7 +9,7 @@ import com.example.vartalap.databinding.ItemContainerReceivedMessageBinding
 import com.example.vartalap.databinding.ItemContainerSentMessageBinding
 import com.example.vartalap.models.ChatMessage
 
-class ChatAdapter(private val senderId: String, private val receiverProfileImage: Bitmap) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ChatAdapter(private val senderId: String, private var receiverProfileImage: Bitmap?) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val VIEW_TYPE_SENT = 1
     private val VIEW_TYPE_RECEIVED = 2
@@ -19,6 +19,11 @@ class ChatAdapter(private val senderId: String, private val receiverProfileImage
     fun setData(chats: List<ChatMessage>) {
         chatMessages = chats
         notifyDataSetChanged()
+    }
+
+    fun setReceivedProfileImage(bitmap: Bitmap){
+        receiverProfileImage = bitmap
+        notifyItemRangeChanged(0, chatMessages.size)
     }
 
     fun insertData(chats: List<ChatMessage>){
@@ -81,8 +86,9 @@ class ChatAdapter(private val senderId: String, private val receiverProfileImage
             }
         }
 
-        fun bind(chatMessage: ChatMessage, receiverProfileImage: Bitmap){
+        fun bind(chatMessage: ChatMessage, receiverProfileImage: Bitmap?){
             binding.chatMessage = chatMessage
+            if (receiverProfileImage != null)
             binding.profileImageView.setImageBitmap(receiverProfileImage)
             binding.executePendingBindings()
         }

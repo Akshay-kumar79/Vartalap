@@ -1,6 +1,9 @@
 package com.example.vartalap.screens.chatPage
 
 import android.app.Application
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.util.Base64
 import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
@@ -8,11 +11,19 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.vartalap.models.ChatMessage
 import com.example.vartalap.models.User
+import com.example.vartalap.utils.ApiClient
 import com.example.vartalap.utils.Constants
 import com.example.vartalap.utils.PreferenceManager
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.firestore.*
 import com.google.firebase.firestore.EventListener
+import org.json.JSONArray
+import org.json.JSONException
+import org.json.JSONObject
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -33,6 +44,10 @@ class ChatViewModel(private val receiverUser: User, application: Application) : 
     private val _chatMessages = MutableLiveData<List<ChatMessage>>()
     val chatMessages: LiveData<List<ChatMessage>>
         get() = _chatMessages
+
+    private val _receiverImage = MutableLiveData<Bitmap>()
+    val receiverImage: LiveData<Bitmap>
+    get() = _receiverImage
 
     //utils
     private val _visibleScreen = MutableLiveData<String>()
@@ -103,6 +118,11 @@ class ChatViewModel(private val receiverUser: User, application: Application) : 
                 if(error != null) return@addSnapshotListener
                 if(value != null){
                     _isReceiverAvailable.value = value.getBoolean(Constants.KEY_AVAILABILITY)
+                    receiverUser.token = value.getString(Constants.KEY_FCM_TOKEN)!!
+                    if (receiverUser.image == ""){
+                        receiverUser.image = value.getString(Constants.KEY_IMAGE)!!
+                    }
+                    _receiverImage.value = getBitmapFromEncodedImage(receiverUser.image)
                 }
             }
     }
@@ -178,7 +198,58 @@ class ChatViewModel(private val receiverUser: User, application: Application) : 
             addConversion(conversion)
         }
 
+        if (!isReceiverAvailable.value!!){
+            try {
+                val tokens = JSONArray()
+                tokens.put(receiverUser.token)
+
+                val data = JSONObject()
+                data.put(Constants.KEY_USER_ID, preferenceManager.getString(Constants.KEY_USER_ID))
+                data.put(Constants.KEY_NAME, preferenceManager.getString(Constants.KEY_NAME))
+                data.put(Constants.KEY_FCM_TOKEN, preferenceManager.getString(Constants.KEY_FCM_TOKEN))
+                data.put(Constants.KEY_MESSAGE, inputMessage.value)
+
+                val body = JSONObject()
+                body.put(Constants.REMOTE_MSG_DATA, data)
+                body.put(Constants.REMOTE_MSG_REGISTRATION_IDS, tokens)
+
+                sendNotification(body.toString())
+            }catch (e: Exception){
+                e.message?.let { showToast(it) }
+            }
+        }
+
         inputMessage.value = ""
+    }
+
+    private fun sendNotification(messageBody: String){
+        ApiClient.retrofitService.sendMessage(Constants.getRemoteMsgHeaders(), messageBody).enqueue(object : Callback<String>{
+            override fun onResponse(call: Call<String>, response: Response<String>) {
+                if (response.isSuccessful){
+                    try {
+                        if (response.body() != null){
+                            val responseJson = JSONObject(response.body()!!)
+                            val results = responseJson.getJSONArray("results")
+                            if (responseJson.getInt("failure") == 1){
+                                val error = results.get(0) as JSONObject
+                                showToast(error.getString("error"))
+                                return
+                            }
+                        }
+                    }catch (e: JSONException){
+                        e.printStackTrace()
+                    }
+                    showToast("Notification sent successfully")
+                }else{
+                    showToast("Error: ${response.code()}")
+                }
+            }
+
+            override fun onFailure(call: Call<String>, t: Throwable) {
+                t.message?.let { showToast(it) }
+            }
+
+        })
     }
 
     private fun showToast(message: String) {
@@ -187,4 +258,8 @@ class ChatViewModel(private val receiverUser: User, application: Application) : 
 
     private fun getReadableDateTime(date: Date): String = SimpleDateFormat("MMMM dd, yyyy - hh:mm a", Locale.getDefault()).format(date)
 
+    private fun getBitmapFromEncodedImage(image: String): Bitmap {
+        val bytes = Base64.decode(image, Base64.DEFAULT)
+        return BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+    }
 }

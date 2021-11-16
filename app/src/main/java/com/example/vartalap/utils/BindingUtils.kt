@@ -1,5 +1,6 @@
 package com.example.vartalap.utils
 
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Base64
 import android.widget.ImageView
@@ -43,6 +44,15 @@ fun addChatList(recyclerView: RecyclerView, data: List<ChatMessage>?, viewModel:
         }
     }
 }
+
+@BindingAdapter("chatImage")
+fun chatImage(recyclerView: RecyclerView, bitmap: Bitmap?){
+    val adapter = recyclerView.adapter as ChatAdapter
+    if(bitmap!= null) {
+        adapter.setReceivedProfileImage(bitmap)
+    }
+}
+
 
 //main page
 @BindingAdapter("addConversionList")

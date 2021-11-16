@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.util.Base64
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -48,12 +49,14 @@ class ChatFragment : Fragment() {
     }
 
     private fun setRecyclerView(){
-        val chatAdapter = ChatAdapter(PreferenceManager(requireContext()).getString(Constants.KEY_USER_ID)!!, getBitmapFromEncodedImage(args.user.image))
+        Log.v("mytag", "${args.user.name} and ${args.user.image}")
+        val chatAdapter = ChatAdapter(PreferenceManager(requireContext()).getString(Constants.KEY_USER_ID)!!,getBitmapFromEncodedImage(args.user.image))
         binding.recyclerView.adapter = chatAdapter
     }
 
-    private fun getBitmapFromEncodedImage(image: String): Bitmap {
+    private fun getBitmapFromEncodedImage(image: String): Bitmap? {
         val bytes = Base64.decode(image, Base64.DEFAULT)
         return BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
     }
+
 }
