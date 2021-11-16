@@ -48,7 +48,7 @@ class MessagingService : FirebaseMessagingService() {
         val builder = NotificationCompat.Builder(this, channelId)
             .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle(user.name)
-            .setContentText(remoteMessage.data.get(Constants.KEY_MESSAGE))
+            .setContentText(remoteMessage.data[Constants.KEY_MESSAGE])
             .setStyle(NotificationCompat.BigTextStyle().bigText(remoteMessage.data[Constants.KEY_MESSAGE]))
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setContentIntent(pendingIntent)

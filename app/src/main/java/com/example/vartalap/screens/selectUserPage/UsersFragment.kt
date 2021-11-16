@@ -10,6 +10,12 @@ import androidx.navigation.fragment.findNavController
 import com.example.vartalap.adapters.UserClickListener
 import com.example.vartalap.adapters.UsersAdapter
 import com.example.vartalap.databinding.FragmentUsersBinding
+import android.view.animation.OvershootInterpolator
+
+import android.view.animation.ScaleAnimation
+
+
+
 
 class UsersFragment : Fragment() {
 
@@ -35,6 +41,13 @@ class UsersFragment : Fragment() {
     private fun setListeners() {
         binding.backButton.setOnClickListener{
             findNavController().popBackStack()
+        }
+
+        binding.testButton.setOnClickListener {
+            val scale = ScaleAnimation(0F, 1F, 0F, 1F, ScaleAnimation.RELATIVE_TO_SELF, .5f, ScaleAnimation.RELATIVE_TO_SELF, .5f)
+            scale.duration = 300
+            scale.interpolator = OvershootInterpolator()
+            it.startAnimation(scale)
         }
     }
 
